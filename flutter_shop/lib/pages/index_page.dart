@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:fluttershop/pages/category_page.dart';
 import 'home_page.dart';
 import 'member_page.dart';
@@ -69,5 +70,7 @@ class _IndexPageState extends State<IndexPage> {
       body: currenPage,
     );
   }
+
 }
+
 

@@ -15,11 +15,11 @@ Future getHttp() async {
   try {
     Response response;
     var dio = Dio();
-
+    print("请求 ---getHttp---");
     Options options = Options();
     options.headers = httpHeaders;
     response = await dio.get(
-        'https://www.jianshu.com/users/recommended?seen_ids=&count=10&only_unfollowed=false',
+        'https://www.jianshu.com/users/recommended?seen_ids=666&count=5&only_unfollowed=true',
         options: options);
     return response.data;
   } catch (e) {
