@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fluttershop/pages/category_page.dart';
 import 'home_page.dart';
 import 'member_page.dart';
 import 'cart_page.dart';
@@ -34,7 +35,7 @@ class _IndexPageState extends State<IndexPage> {
 
   final List tabBodies = [
     HomePage(),
-    CartPage(),
+    CategoryPage(),
     CartPage(),
     MemberPage()
   ];
