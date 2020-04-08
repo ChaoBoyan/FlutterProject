@@ -24,10 +24,12 @@ class _HomePageState extends State<HomePage> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List list = (snapshot.data["users"]);
+                List navList = posts.sublist(0,10);
 //                litpic
                 return Column(
                   children: <Widget>[
                     SwiperDiy(swiperDateList: list),
+                    TopNavigator(navigatorList: navList),
                   ],
                 );
               } else {
@@ -42,6 +44,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+//轮播
 class SwiperDiy extends StatelessWidget {
   final List swiperDateList;
 
@@ -49,18 +52,70 @@ class SwiperDiy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,width: 750,height: 1334);
     return Container(
-      height: 240.h,
+      height: 300.w,
       width: 750.w,
       child: Swiper(
         itemBuilder: (BuildContext context, int index) {
 //          posts[index].imageUrl
-          return Image.network("${swiperDateList[index]["avatar_source"]}",fit: BoxFit.fill,);
+          return Image.network(
+            "${swiperDateList[index]["avatar_source"]}",
+            fit: BoxFit.fill,
+          );
         },
         itemCount: swiperDateList.length,
         pagination: SwiperPagination(),
         autoplay: true,
+      ),
+    );
+  }
+}
+
+//
+class TopNavigator extends StatelessWidget {
+  final List<Post> navigatorList;
+
+  TopNavigator({Key key, this.navigatorList}) : super(key: key);
+
+  Widget _gridViewItemUI(BuildContext context, item) {
+    return InkWell(
+      onTap: () {
+        print("click Navigator");
+      },
+      child: Column(
+
+        children: <Widget>[
+//          Image.network("${item.imageUrl}",width: 95.w,),
+//          ClipRRect(child: Image.network("${item.imageUrl}",width: 95.w),borderRadius: BorderRadius.circular(6.0),),
+          CircleAvatar(
+            backgroundImage: NetworkImage("${item.imageUrl}"),
+//            radius: 95.w,
+          ),
+          SizedBox(height: 4,),
+          Text("商品"),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+//      color: Colors.red,
+      height: 320.w,
+
+      padding: EdgeInsets.fromLTRB(0.0,10.0,0,0.0),
+      child: GridView.count(
+
+        crossAxisCount: 5,
+        physics: NeverScrollableScrollPhysics(),
+//        primary: false,
+        mainAxisSpacing: 10.w,
+        crossAxisSpacing: 10.w,
+
+        children: navigatorList.map((item){
+         return  _gridViewItemUI(context, item);
+        }).toList(),
       ),
     );
   }
