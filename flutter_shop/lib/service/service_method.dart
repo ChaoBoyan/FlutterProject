@@ -12,7 +12,8 @@ import 'package:fluttershop/config/Config.dart';
 //});
 //});
 Future getHttp() async {
-  try {
+
+  try{
     Response response;
     var dio = Dio();
     print("请求 ---getHttp---");
@@ -21,8 +22,16 @@ Future getHttp() async {
     response = await dio.get(
         'https://www.jianshu.com/users/recommended?seen_ids=666&count=5&only_unfollowed=true',
         options: options);
-    return response.data;
-  } catch (e) {
-    return (e);
+    if (response.statusCode == 200) {
+      return response.data;
+    }else{
+      throw Exception("接口异常");
+    }
+  }catch(e){
+    return print("Error:-------${e.toString()}");
   }
+
+
+
+
 }

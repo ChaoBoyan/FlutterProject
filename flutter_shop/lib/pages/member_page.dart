@@ -17,7 +17,7 @@ class AuthorInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200.h,
+      height: 220.h,
       padding: EdgeInsets.all(10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
