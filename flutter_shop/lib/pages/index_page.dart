@@ -35,26 +35,28 @@ class _IndexPageState extends State<IndexPage> {
     ),
   ];
 
-  final List tabBodies = [
-    HomePage(),
-    CategoryPage(),
-    CartPage(),
-    MemberPage()
-  ];
+  List<Widget> tabBodies = [];
+  void initDate() {
+    tabBodies.add(HomePage());
+    tabBodies.add(CategoryPage());
+    tabBodies.add(CartPage());
+    tabBodies.add(MemberPage());
+  }
 
   int currentIndex = 0;
   var currenPage;
 
   @override
   void initState() {
+    initDate();
     currenPage = tabBodies[currentIndex];
-
     super.initState();
 
   }
 
   @override
   Widget build(BuildContext context) {
+
     ScreenUtil.init(context,width: 750,height: 1334);
     return Scaffold(
       backgroundColor: Color.fromRGBO(244, 245, 245, 1.0),
@@ -69,7 +71,10 @@ class _IndexPageState extends State<IndexPage> {
           });
         },
       ),
-      body: currenPage,
+      body: IndexedStack(
+        index: currentIndex,
+        children: (tabBodies),
+      ),
     );
   }
 

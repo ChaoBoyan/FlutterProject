@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>  with AutomaticKeepAliveClientMixin{
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -26,19 +26,24 @@ class _HomePageState extends State<HomePage> {
                 List list = (snapshot.data["users"]);
                 List navList = posts.sublist(0,10);
                 String adPicture = "http://img.pconline.com.cn/images/upload/upc/tx/photoblog/1408/26/c0/37863154_37863154_1409006331562.jpg";
+//
+                List recommondList = posts.sublist(11,posts.length);
 //                litpic
-                return Column(
-                  children: <Widget>[
+                return SingleChildScrollView (
+                   child: Column(
+                      children: <Widget>[
 //                    1
-                    SwiperDiy(swiperDateList: list),
+                        SwiperDiy(swiperDateList: list),
 //                    2
-                    TopNavigator(navigatorList: navList),
+                        TopNavigator(navigatorList: navList),
 //                    3
-                    AdBanner(adPicture: adPicture),
+                        AdBanner(adPicture: adPicture),
 //                    4
-                  AuthorInfo(),
-                  ],
+                        Recommend(recommendList: recommondList,)
+                      ],
+                    ),
                 );
+
               } else {
                 return Center(
                   child: Text("加载中...."),
@@ -49,6 +54,10 @@ class _HomePageState extends State<HomePage> {
           )),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 //轮播
@@ -151,31 +160,77 @@ class AdBanner extends StatelessWidget {
   }
 }
 
-//作者电话
-class AuthorInfo extends StatelessWidget {
+class Recommend extends StatelessWidget {
+  final List recommendList;
 
+  Recommend({Key key, this.recommendList}) : super(key: key);
+
+//  标题
+  Widget _titleWidget() {
+    return Container(
+      height: 40,
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(width: 1, color: Colors.black12)),
+      ),
+      child: Text(
+        "商品推荐",
+        style: TextStyle(color: Colors.pink),
+      ),
+    );
+  }
+
+//  商品列表
+  Widget _item(index) {
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        height: 330.h,
+        width: 250.w,
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            left: BorderSide(width: 1, color: Colors.black12),
+          ),
+        ),
+        child: Column(
+          children: <Widget>[
+            Expanded(child: Image.network("${recommendList[index].imageUrl}",fit: BoxFit.cover,)),
+            Text("￥50.0"),
+            Text(
+              "￥100.0",
+              style: TextStyle(
+                  decoration: TextDecoration.lineThrough, decorationColor: Colors.red,color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+//  横向列表
+  Widget _recommondList(){
+    return Container(
+      height: 330.h,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: recommendList.length,
+        itemBuilder: (context,index){
+          return _item(index);
+        },
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+      child: Column(
         children: <Widget>[
-          CircleAvatar(
-            backgroundImage: NetworkImage("https://upload.jianshu.io/users/upload_avatars/2927423/37128c7f-32ea-45aa-8929-6fc64ef164e6.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240"),
-            radius: 60.w,
-          ),
-          SizedBox(width: 10),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text("姓名：Chaoboyan"),
-              Text("简介：iOS从事多年，独立开发"),
-              Text("地址：https://github.com/ChaoBoyan"),
-              Text("邮箱：1297595138@qq.com"),
-            ],
-          ),
+          _titleWidget(),
+          _recommondList()
         ],
       ),
     );
