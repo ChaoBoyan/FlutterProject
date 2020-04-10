@@ -15,6 +15,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
+
+  int page = 1;
+  List beatyList = [];
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _getBeaty();
+    super.initState();
+  }
 //  主赞助商 数据
   var mainMoney = [
     "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3239140714,3273296400&fm=26&gp=0.jpg",
@@ -69,6 +80,8 @@ class _HomePageState extends State<HomePage>
                       ),
                       CollectTitle(imgStr: mainMoney[2],),
                       CollectView(collectList: posts,),
+
+                      _hotBeatyWidget(),
                     ],
                   ),
                 );
@@ -80,6 +93,76 @@ class _HomePageState extends State<HomePage>
             },
             future: getHttp(),
           )),
+    );
+  }
+
+  void _getBeaty(){
+    getYYHttp(page).then((val){
+      List newList = val["data"]["data"];
+      setState(() {
+        beatyList.addAll(newList);
+        page ++;
+      });
+    });
+  }
+
+  Widget hotTitle = Container(
+//    margin: EdgeInsets.only(top: 10.0),
+    alignment: Alignment.center,
+    color: Colors.transparent,
+    child: Text("🍆火爆专区",style: TextStyle(color: Colors.pink,fontSize: 30.ssp),),
+  );
+
+  Widget _wrapList() {
+    if (beatyList.length != 0) {
+      List<Widget>  widgetList = beatyList.map((val){
+        return InkWell(
+          onTap: (){},
+          child: Container(
+            width: (375 - 10 - 2*10).w,
+//            padding: EdgeInsets.all(10.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Image.network(val["img"],fit: BoxFit.fitWidth,),
+                Text(val["name"],maxLines: 1,overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.pink,fontSize: 26.ssp),),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("￥500"),
+                    Text("￥1000",style: TextStyle(color: Colors.pink,decoration: TextDecoration.lineThrough),)
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList();
+
+      return Container(
+        padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 10.0),
+        child: Wrap(
+          spacing: 10.0,
+          runSpacing: 10.0,
+          children: widgetList,
+        ),
+      );
+
+    }else{
+     return Text("暂无数据");
+    }
+  }
+
+
+  Widget _hotBeatyWidget(){
+    return Container(
+      child: Column(
+        children: <Widget>[
+          hotTitle,
+          _wrapList(),
+        ],
+      ),
     );
   }
 
@@ -367,3 +450,4 @@ class CollectView extends StatelessWidget {
     );
   }
 }
+
