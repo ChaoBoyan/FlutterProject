@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:fluttershop/config/Post.dart';
 import 'package:fluttershop/service/service_method.dart';
 import '../config/Config.dart';
@@ -15,7 +17,25 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
+  // 是否开启刷新
+  bool _enableRefresh = true;
 
+  EasyRefreshController _refreshcontro = EasyRefreshController();
+
+  int  _randomMoney(int len,{double percent = 1}) {
+    String scopeF = "123456789";//首位
+    String scopeC = "0123456789";//中间
+    String result = "";
+    for (int i = 0; i <= len; i++) {
+      if (i == 1) {
+        result = scopeF[Random().nextInt(scopeF.length)];
+      } else {
+        result = result + scopeC[Random().nextInt(scopeC.length)];
+      }
+    }
+
+    return  (int.parse(result) * percent).toInt();
+  }
   int page = 1;
   List beatyList = [];
 
@@ -23,7 +43,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     // TODO: implement initState
-    _getBeaty();
+//    _getBeaty();
     super.initState();
   }
 //  主赞助商 数据
@@ -36,6 +56,8 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    Locale locale = Localizations.localeOf(context);
+    print(locale.toString());
     return Container(
       child: Scaffold(
           appBar: AppBar(
@@ -50,8 +72,16 @@ class _HomePageState extends State<HomePage>
 //
                 List recommondList = posts.sublist(11, posts.length);
 //                litpic
-                return SingleChildScrollView(
-                  child: Column(
+                return EasyRefresh(
+                  controller: _refreshcontro,
+                  header: ClassicalHeader(
+                    showInfo: false,
+                  ),
+                  footer: ClassicalFooter(
+                    showInfo: false,
+
+                  ),
+                  child: ListView(
                     children: <Widget>[
 //                    1
                       SwiperDiy(swiperDateList: list),
@@ -63,7 +93,6 @@ class _HomePageState extends State<HomePage>
                       Recommend(
                         recommendList: recommondList,
                       ),
-
 //                      5.1
                       CollectTitle(
                         imgStr: mainMoney[0],
@@ -82,8 +111,25 @@ class _HomePageState extends State<HomePage>
                       CollectView(collectList: posts,),
 
                       _hotBeatyWidget(),
+
+                    beatyList.length >= 40 ? Container(child: Text("--触碰到最后底线了--",style: TextStyle(color: Colors.grey),),padding: EdgeInsets.all(10.0),alignment: Alignment.center,) : SizedBox(height: 0.0,)
                     ],
                   ),
+                  onRefresh:  () async{
+                    setState(() {
+                      page = 1;
+                      _enableRefresh = true;
+                      beatyList.clear();
+                    });
+                    _refreshcontro.resetLoadState();
+                    print("上拉加载...${page}");
+                    await _getBeaty();
+                    },
+                  onLoad: _enableRefresh ? () async{
+                    print("加载更多...");
+                    await  _getBeaty();
+                    beatyList.length >= 40 ? _enableRefresh = false : _enableRefresh = true;
+                  } : null,
                 );
               } else {
                 return Center(
@@ -97,7 +143,7 @@ class _HomePageState extends State<HomePage>
   }
 
   void _getBeaty(){
-    getYYHttp(page).then((val){
+     getYYHttp(page).then((val){
       List newList = val["data"]["data"];
       setState(() {
         beatyList.addAll(newList);
@@ -106,32 +152,38 @@ class _HomePageState extends State<HomePage>
     });
   }
 
+//  火爆 专区标题
   Widget hotTitle = Container(
-//    margin: EdgeInsets.only(top: 10.0),
+    margin: EdgeInsets.only(bottom: 8.0),
     alignment: Alignment.center,
     color: Colors.transparent,
     child: Text("🍆火爆专区",style: TextStyle(color: Colors.pink,fontSize: 30.ssp),),
   );
 
+//  火爆 beaty List
   Widget _wrapList() {
     if (beatyList.length != 0) {
       List<Widget>  widgetList = beatyList.map((val){
+
+        final moneyTotal = _randomMoney(4);
+        final moneySale= (moneyTotal * 0.8).toInt();
+
         return InkWell(
           onTap: (){},
           child: Container(
             width: (375 - 10 - 2*10).w,
-//            padding: EdgeInsets.all(10.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Image.network(val["img"],fit: BoxFit.fitWidth,),
+
+                Image.network(val["img"],width: (375 - 10 - 2*10).w,height: ((375 - 10 - 2*10)).w,fit: BoxFit.cover,),
                 Text(val["name"],maxLines: 1,overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.pink,fontSize: 26.ssp),),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("￥500"),
-                    Text("￥1000",style: TextStyle(color: Colors.pink,decoration: TextDecoration.lineThrough),)
+                    Text("￥${moneySale}"),
+                    Text("￥${moneyTotal}",style: TextStyle(color: Colors.pink,decoration: TextDecoration.lineThrough),)
                   ],
                 ),
               ],
@@ -156,6 +208,7 @@ class _HomePageState extends State<HomePage>
 
 
   Widget _hotBeatyWidget(){
+
     return Container(
       child: Column(
         children: <Widget>[

@@ -1,4 +1,7 @@
 //  data 用于post请求传参； queryParameters 用于get请求传参
+//图片来源 网络数据，如有侵权，请联系我
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:fluttershop/config/Config.dart';
 //getHttp().then((val) {
@@ -54,3 +57,5 @@ Future getYYHttp(page) async {
     return print("Error:-------${e.toString()}");
   }
 }
+
+
