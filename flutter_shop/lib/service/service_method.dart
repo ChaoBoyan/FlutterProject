@@ -59,3 +59,25 @@ Future getYYHttp(page) async {
 }
 
 
+//http://iflow.uczzd.cn/iflow/api/v1/channels?app=uc-iflow&ab_tag=2343C2;2864B2;2957B2;2971A2;2882C2;2536H2;2999B2;2660A2;2339C2;2937A2;2940B2;2060C2;2900A2;&&puser=0&tab=video&uc_param_str=dnnivebichfrmintcpgimewidsudsvlissnwlobd&dn=54851312174-718e0547&nn=AATKyFSIyS4MX28pJTKYPtPvR3cOGOjbaUg8LOI5Njv0xw%3D%3D&ve=12.9.0.1292&bi=997&fr=iphone&mi=iPhone6%2C2&nt=2&pc=AAQRAtQtd9XY54gmHPf775eHbuf%2BYbC9eehroE%2BrJhJ2hVnH8IpdbEg5gELNRVLXEQL0hH4Dj1mbnBLqoQVUIAsn&me=AARImJtd3y76T%2Fi6xDzIDzR%2BrKiCTO2WPkvUmej8CN7dgXHeIsDJAe6YiHH3ptZ9CP4%3D&ut=AATJeTmOtTLec2BH8xAFS1RM%2BZT%2BuXs77da%2FrUdJUT7PYw%3D%3D&ai=AAQ%3D&sv=appa&lb=AAQbXUX3IfIEMgNbUxO7%2BHnK0erN5YqEUinjKFc56v5Rkg%3D%3D&ss=320x568&nw=WIFI&bd=apple
+Future getCategoryHttp() async {
+
+  try{
+    Response response;
+    var dio = Dio();
+    print("分类 ---getCategoryHttp---");
+    Options options = Options();
+    options.headers = httpHeaders;
+    response = await dio.get(
+        "http://iflow.uczzd.cn/iflow/api/v1/channels?app=uc-iflow&ab_tag=2343C2;2864B2;2957B2;2971A2;2882C2;2536H2;2999B2;2660A2;2339C2;2937A2;2940B2;2060C2;2900A2;&&puser=0&tab=video&uc_param_str=dnnivebichfrmintcpgimewidsudsvlissnwlobd&dn=54851312174-718e0547&nn=AATKyFSIyS4MX28pJTKYPtPvR3cOGOjbaUg8LOI5Njv0xw%3D%3D&ve=12.9.0.1292&bi=997&fr=iphone&mi=iPhone6%2C2&nt=2&pc=AAQRAtQtd9XY54gmHPf775eHbuf%2BYbC9eehroE%2BrJhJ2hVnH8IpdbEg5gELNRVLXEQL0hH4Dj1mbnBLqoQVUIAsn&me=AARImJtd3y76T%2Fi6xDzIDzR%2BrKiCTO2WPkvUmej8CN7dgXHeIsDJAe6YiHH3ptZ9CP4%3D&ut=AATJeTmOtTLec2BH8xAFS1RM%2BZT%2BuXs77da%2FrUdJUT7PYw%3D%3D&ai=AAQ%3D&sv=appa&lb=AAQbXUX3IfIEMgNbUxO7%2BHnK0erN5YqEUinjKFc56v5Rkg%3D%3D&ss=320x568&nw=WIFI&bd=",
+        options: options);
+//    print(response.data["data"]["data"]);
+    if (response.statusCode == 200) {
+      return response.data;
+    }else{
+      throw Exception("接口异常");
+    }
+  }catch(e){
+    return print("Error:-------${e.toString()}");
+  }
+}
