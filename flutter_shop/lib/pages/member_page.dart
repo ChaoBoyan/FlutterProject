@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttershop/config/Post.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttershop/provide/counter.dart';
+import 'package:provide/provide.dart';
 
 class MemberPage extends StatelessWidget {
   @override
@@ -39,6 +41,11 @@ class AuthorInfo extends StatelessWidget {
               Text("简介：iOS从事多年，独立开发"),
               Text("地址：https://github.com/ChaoBoyan"),
               Text("邮箱：1297595138@qq.com"),
+              Provide<Counter>(
+                builder: (context,child,counter){
+                  return  Text("点赞：${counter.value}w");
+                },
+              ),
             ],
           ),
         ],
