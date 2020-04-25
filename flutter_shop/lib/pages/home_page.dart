@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -5,11 +6,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:fluttershop/config/Post.dart';
+import 'package:fluttershop/pages/goodDetail_page.dart';
 import 'package:fluttershop/service/service_method.dart';
 import '../config/Config.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
@@ -169,15 +172,26 @@ class _HomePageState extends State<HomePage>
         final moneySale= (moneyTotal * 0.8).toInt();
 
         return InkWell(
-          onTap: (){},
+          onTap: (){
+            Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context){
+              return new goodsDetail(title:val["name"]);
+            }));
+
+          },
           child: Container(
             width: (375 - 10 - 2*10).w,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-
-                Image.network(val["img"],width: (375 - 10 - 2*10).w,height: ((375 - 10 - 2*10)).w,fit: BoxFit.cover,),
+                CachedNetworkImage(
+                  width: (375 - 10 - 2*10).w,
+                  height: ((375 - 10 - 2*10)).w,
+                  imageUrl: val["img"],
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
+//                Image.network(val["img"],width: (375 - 10 - 2*10).w,height: ((375 - 10 - 2*10)).w,fit: BoxFit.cover,),
                 Text(val["name"],maxLines: 1,overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.pink,fontSize: 26.ssp),),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -238,9 +252,13 @@ class SwiperDiy extends StatelessWidget {
       child: Swiper(
         itemBuilder: (BuildContext context, int index) {
 //          posts[index].imageUrl
-          return Image.network(
-            "${swiperDateList[index]["avatar_source"]}",
-            fit: BoxFit.fill,
+//          return Image.network(
+//            "${swiperDateList[index]["avatar_source"]}",
+//            fit: BoxFit.fill,
+//          );
+         return CachedNetworkImage(
+           fit: BoxFit.fill,
+           imageUrl:"${swiperDateList[index]["avatar_source"]}",
           );
         },
         itemCount: swiperDateList.length,
@@ -312,8 +330,8 @@ class AdBanner extends StatelessWidget {
     return Container(
       child: Column(
         children: <Widget>[
-          Image.network(
-            adPicture,
+          CachedNetworkImage(
+            imageUrl: adPicture,
             height: 200.w,
             width: 750.w,
             fit: BoxFit.cover,
@@ -374,10 +392,16 @@ class Recommend extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Expanded(
-                child: Image.network(
-              "${recommendList[index].imageUrl}",
-              fit: BoxFit.cover,
-            )),
+              child: CachedNetworkImage(
+                imageUrl: "${recommendList[index].imageUrl}",
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+//                child: Image.network(
+//              "${recommendList[index].imageUrl}",
+//              fit: BoxFit.cover,
+//            )
+            ),
             Text("￥50.0"),
             Text(
               "￥100.0",
@@ -432,8 +456,8 @@ class CollectTitle extends StatelessWidget {
         onTap: () {},
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          child: Image.network(
-            imgStr,
+          child: CachedNetworkImage(
+            imageUrl:imgStr,
             fit: BoxFit.cover,
           ),
         ),
@@ -457,10 +481,12 @@ class CollectView extends StatelessWidget {
       height: (375.w * 3 / 4) * pix,
       child: InkWell(
         onTap: () {},
-        child: Image.network(
-          imgStr,
+        child:
+        CachedNetworkImage(
+          imageUrl: imgStr,
           fit: BoxFit.cover,
         ),
+
       ),
     );
   }

@@ -6,6 +6,9 @@ class MemberPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("个人中心"),
+      ),
       body: AuthorInfo(),
     );
   }
@@ -16,6 +19,7 @@ class AuthorInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Container(
       height: 220.h,
       padding: EdgeInsets.all(10),
