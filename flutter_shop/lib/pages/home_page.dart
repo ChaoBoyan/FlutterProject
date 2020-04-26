@@ -126,6 +126,7 @@ class _HomePageState extends State<HomePage>
                     });
                     _refreshcontro.resetLoadState();
                     print("上拉加载...${page}");
+
                     await _getBeaty();
                     },
                   onLoad: _enableRefresh ? () async{
@@ -393,8 +394,9 @@ class Recommend extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: CachedNetworkImage(
+                fit: BoxFit.cover,
                 imageUrl: "${recommendList[index].imageUrl}",
-                placeholder: (context, url) => CircularProgressIndicator(),
+                placeholder: (context, url) => Icon(Icons.refresh),
                 errorWidget: (context, url, error) => Icon(Icons.error),
               ),
 //                child: Image.network(

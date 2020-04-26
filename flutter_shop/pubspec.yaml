@@ -30,7 +30,7 @@ dependencies:
     #图片缓存
   cached_network_image: ^2.1.0+1
 #  提示框
-  fluttertoast: ^4.0.0
+  oktoast: ^2.3.2
 #国际化
   flutter_localizations:
     sdk: flutter

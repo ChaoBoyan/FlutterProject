@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:fluttershop/pages/index_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provide/provide.dart';
 
 import 'provide/counter.dart';
@@ -21,7 +22,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return OKToast(
+     child: MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -38,6 +40,7 @@ class MyApp extends StatelessWidget {
         Locale('zh', 'CN'),
       ],
       home: IndexPage(),
+      ),
     );
   }
 }
