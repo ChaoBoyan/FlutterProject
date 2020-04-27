@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -25,9 +24,9 @@ class _HomePageState extends State<HomePage>
 
   EasyRefreshController _refreshcontro = EasyRefreshController();
 
-  int  _randomMoney(int len,{double percent = 1}) {
-    String scopeF = "123456789";//首位
-    String scopeC = "0123456789";//中间
+  int _randomMoney(int len, {double percent = 1}) {
+    String scopeF = "123456789"; //首位
+    String scopeC = "0123456789"; //中间
     String result = "";
     for (int i = 0; i <= len; i++) {
       if (i == 1) {
@@ -37,11 +36,11 @@ class _HomePageState extends State<HomePage>
       }
     }
 
-    return  (int.parse(result) * percent).toInt();
+    return (int.parse(result) * percent).toInt();
   }
+
   int page = 1;
   List beatyList = [];
-
 
   @override
   void initState() {
@@ -49,6 +48,7 @@ class _HomePageState extends State<HomePage>
 //    _getBeaty();
     super.initState();
   }
+
 //  主赞助商 数据
   var mainMoney = [
     "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3239140714,3273296400&fm=26&gp=0.jpg",
@@ -82,7 +82,6 @@ class _HomePageState extends State<HomePage>
                   ),
                   footer: ClassicalFooter(
                     showInfo: false,
-
                   ),
                   child: ListView(
                     children: <Widget>[
@@ -110,15 +109,30 @@ class _HomePageState extends State<HomePage>
                       CollectView(
                         collectList: posts,
                       ),
-                      CollectTitle(imgStr: mainMoney[2],),
-                      CollectView(collectList: posts,),
+                      CollectTitle(
+                        imgStr: mainMoney[2],
+                      ),
+                      CollectView(
+                        collectList: posts,
+                      ),
 
                       _hotBeatyWidget(),
 
-                    beatyList.length >= 40 ? Container(child: Text("--触碰到最后底线了--",style: TextStyle(color: Colors.grey),),padding: EdgeInsets.all(10.0),alignment: Alignment.center,) : SizedBox(height: 0.0,)
+                      beatyList.length >= 40
+                          ? Container(
+                              child: Text(
+                                "--触碰到最后底线了--",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              padding: EdgeInsets.all(10.0),
+                              alignment: Alignment.center,
+                            )
+                          : SizedBox(
+                              height: 0.0,
+                            )
                     ],
                   ),
-                  onRefresh:  () async{
+                  onRefresh: () async {
                     setState(() {
                       page = 1;
                       _enableRefresh = true;
@@ -128,12 +142,16 @@ class _HomePageState extends State<HomePage>
                     print("上拉加载...${page}");
 
                     await _getBeaty();
-                    },
-                  onLoad: _enableRefresh ? () async{
-                    print("加载更多...");
-                    await  _getBeaty();
-                    beatyList.length >= 40 ? _enableRefresh = false : _enableRefresh = true;
-                  } : null,
+                  },
+                  onLoad: _enableRefresh
+                      ? () async {
+                          print("加载更多...");
+                          await _getBeaty();
+                          beatyList.length >= 40
+                              ? _enableRefresh = false
+                              : _enableRefresh = true;
+                        }
+                      : null,
                 );
               } else {
                 return Center(
@@ -146,12 +164,12 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  void _getBeaty(){
-     getYYHttp(page).then((val){
+  void _getBeaty() {
+    getYYHttp(page).then((val) {
       List newList = val["data"]["data"];
       setState(() {
         beatyList.addAll(newList);
-        page ++;
+        page++;
       });
     });
   }
@@ -161,44 +179,65 @@ class _HomePageState extends State<HomePage>
     margin: EdgeInsets.only(bottom: 8.0),
     alignment: Alignment.center,
     color: Colors.transparent,
-    child: Text("🍆火爆专区",style: TextStyle(color: Colors.pink,fontSize: 30.ssp),),
+    child: Text(
+      "🍆火爆专区",
+      style: TextStyle(color: Colors.pink, fontSize: 30.ssp),
+    ),
   );
 
 //  火爆 beaty List
   Widget _wrapList() {
     if (beatyList.length != 0) {
-      List<Widget>  widgetList = beatyList.map((val){
-
+      List<Widget> widgetList = beatyList.map((val) {
+//        print(val);
         final moneyTotal = _randomMoney(4);
-        final moneySale= (moneyTotal * 0.8).toInt();
+        final moneySale = (moneyTotal * 0.8).toInt();
 
         return InkWell(
-          onTap: (){
-            Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context){
-              return new goodsDetail(title:val["name"]);
+          onTap: () {
+            Navigator.push(context,
+                new MaterialPageRoute(builder: (BuildContext context) {
+              return new goodsDetail(
+                title: val["name"],
+                fans: "${val["fans"]}",
+                desc: val["desc"],
+                users: "${val["users"]}",
+                yyNum: "${val["yyNum"]}",
+                snapshot: val["snapshot"],
+              );
+//              fans ;desc;users;yyNum;snapshot
             }));
-
           },
           child: Container(
-            width: (375 - 10 - 2*10).w,
+            width: (375 - 10 - 2 * 10).w,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 CachedNetworkImage(
-                  width: (375 - 10 - 2*10).w,
-                  height: ((375 - 10 - 2*10)).w,
+                  width: (375 - 10 - 2 * 10).w,
+                  height: ((375 - 10 - 2 * 10)).w,
                   imageUrl: val["img"],
                   placeholder: (context, url) => CircularProgressIndicator(),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
 //                Image.network(val["img"],width: (375 - 10 - 2*10).w,height: ((375 - 10 - 2*10)).w,fit: BoxFit.cover,),
-                Text(val["name"],maxLines: 1,overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.pink,fontSize: 26.ssp),),
+                Text(
+                  val["name"],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.pink, fontSize: 26.ssp),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text("￥${moneySale}"),
-                    Text("￥${moneyTotal}",style: TextStyle(color: Colors.pink,decoration: TextDecoration.lineThrough),)
+                    Text(
+                      "￥${moneyTotal}",
+                      style: TextStyle(
+                          color: Colors.pink,
+                          decoration: TextDecoration.lineThrough),
+                    )
                   ],
                 ),
               ],
@@ -215,15 +254,12 @@ class _HomePageState extends State<HomePage>
           children: widgetList,
         ),
       );
-
-    }else{
-     return Text("暂无数据");
+    } else {
+      return Text("暂无数据");
     }
   }
 
-
-  Widget _hotBeatyWidget(){
-
+  Widget _hotBeatyWidget() {
     return Container(
       child: Column(
         children: <Widget>[
@@ -257,9 +293,9 @@ class SwiperDiy extends StatelessWidget {
 //            "${swiperDateList[index]["avatar_source"]}",
 //            fit: BoxFit.fill,
 //          );
-         return CachedNetworkImage(
-           fit: BoxFit.fill,
-           imageUrl:"${swiperDateList[index]["avatar_source"]}",
+          return CachedNetworkImage(
+            fit: BoxFit.fill,
+            imageUrl: "${swiperDateList[index]["avatar_source"]}",
           );
         },
         itemCount: swiperDateList.length,
@@ -459,7 +495,7 @@ class CollectTitle extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
           child: CachedNetworkImage(
-            imageUrl:imgStr,
+            imageUrl: imgStr,
             fit: BoxFit.cover,
           ),
         ),
@@ -483,12 +519,10 @@ class CollectView extends StatelessWidget {
       height: (375.w * 3 / 4) * pix,
       child: InkWell(
         onTap: () {},
-        child:
-        CachedNetworkImage(
+        child: CachedNetworkImage(
           imageUrl: imgStr,
           fit: BoxFit.cover,
         ),
-
       ),
     );
   }
@@ -531,4 +565,3 @@ class CollectView extends StatelessWidget {
     );
   }
 }
-
