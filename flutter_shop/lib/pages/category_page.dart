@@ -7,10 +7,12 @@ import 'package:flutter/rendering.dart';
 import 'package:fluttershop/generated/json/live_t_v_entity_helper.dart';
 import 'package:fluttershop/model/categrory_entity.dart';
 import 'package:fluttershop/model/live_t_v_entity.dart';
+import 'package:fluttershop/provide/counter.dart';
 import 'package:fluttershop/service/service_method.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
-
+import 'package:provide/provide.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -18,12 +20,9 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-
   List listTitleDate = [];
 
   String rightImgUrl = "";
-
-  int currentInde = 0;
 
   @override
   void initState() {
@@ -35,7 +34,6 @@ class _CategoryPageState extends State<CategoryPage> {
 ////      });
 //    });
     super.initState();
-
   }
 
   void _getCatogeryList() {
@@ -49,92 +47,116 @@ class _CategoryPageState extends State<CategoryPage> {
       });
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text("内容分类"),
-      ),
-      body: FutureBuilder(
-        future: getLiveTVCategoryHttp(),
-        builder: (context,snapate){
-          if (snapate.hasData){
-            LiveTVEntity model = LiveTVEntity().fromJson(snapate.data);
-            listTitleDate = model.data;
-            return Container(
-              child: Row(
-                children: <Widget>[
-                  _leftListView(),
-//                  Image.network(rightImgUrl),
-                ],
-              ),
-            );
-          }else{
-            return Text(" ");
-          }
+        appBar: AppBar(
+          title: Text("内容分类"),
+        ),
+        body: FutureBuilder(
+          future: getLiveTVCategoryHttp(),
+          builder: (context, snapate) {
+            if (snapate.hasData) {
+              LiveTVEntity model = LiveTVEntity().fromJson(snapate.data);
+              listTitleDate = model.data;
 
-        },
-      )
+              return Container(
+                child:
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _leftListView(),
+
+                    SingleChildScrollView(
+                    child:  Container(
+//                      color: Colors.red,
+                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        width: (750 - 180 - 10).w,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Provide<Counter>(
+                                builder: (context, child, counter) {
+//                              width: (750 - 180 - 10).w,
+//                              height: (750 - 180 - 10).w,
+                              return CachedNetworkImage(
+                                  imageUrl:
+                                      listTitleDate[counter.selectIndex].pic,
+                                );
+                            }),
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+            else {
+              return Text(" ");
+            }
+          },
+        )
 //
-    );
+        );
   }
 
   Widget _leftListView() {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          right: BorderSide(color: Colors.black12,width: 1),
+          right: BorderSide(color: Colors.black12, width: 1),
         ),
       ),
       width: 180.w,
-
-      child: ListView.builder(itemBuilder: (context,index){
-        return _itemInkWell(index);
-      },itemCount: listTitleDate.length,),
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          return _itemInkWell(index);
+        },
+        itemCount: listTitleDate.length,
+      ),
     );
   }
 
-
   Widget _itemInkWell(index) {
-
-   var isSelect = currentInde == index ? true : false;
-
     LiveTVData model = listTitleDate[index];
-    return Container(
-      height: 120.w,
-      decoration: BoxDecoration(
-        color:isSelect ? Colors.black12 : Colors.white,
-        border: Border(
-          bottom: BorderSide(color: Colors.black12,width: 1)
+    return Provide<Counter>(builder: (context, child, counter) {
+      var isSelect = counter.selectIndex == index ? true : false;
+      return Container(
+        height: 120.w,
+        decoration: BoxDecoration(
+          color: isSelect ? Colors.black12 : Colors.white,
+          border: Border(bottom: BorderSide(color: Colors.black12, width: 1)),
         ),
-      ),
-      child: InkWell(
-        onTap: (){
-          print(model.pic);
-          showToast("人气爆棚");
-          setState(() {
-            currentInde = index;
-          });
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(width: 6),
-            CachedNetworkImage(
-              width: 44.w,
-              height: 44.w,
-              imageUrl: model.pic,
-              placeholder: (context,_){
-                return Icon(Icons.replay_10);
-              },
-            ),
-            SizedBox(width: 3),
-            Text("${model.name}"),
-          ],
+        child: InkWell(
+          onTap: () {
+            showToast(model.name);
+            Provide.value<Counter>(context).changeSelectIndex(index);
+//            var counterValue = Provide.value<Counter>(context).value;
+//            print("人气值：" + "${counterValue}");
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(width: 6),
+              CachedNetworkImage(
+                width: 44.w,
+                height: 44.w,
+                imageUrl: model.pic,
+                placeholder: (context, _) {
+                  return Icon(Icons.replay_10);
+                },
+              ),
+              SizedBox(width: 3),
+              Text("${model.name}"),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
