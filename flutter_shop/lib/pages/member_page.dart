@@ -23,10 +23,10 @@ class AuthorInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     
     return Container(
-      height: 220.h,
       padding: EdgeInsets.all(10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           CircleAvatar(
             backgroundImage: NetworkImage("https://upload.jianshu.io/users/upload_avatars/2927423/37128c7f-32ea-45aa-8929-6fc64ef164e6.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240"),
@@ -34,7 +34,7 @@ class AuthorInfo extends StatelessWidget {
           ),
           SizedBox(width: 10),
           Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text("姓名：Chaoboyan"),

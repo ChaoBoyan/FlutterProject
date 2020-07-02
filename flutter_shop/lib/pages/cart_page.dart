@@ -4,6 +4,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -22,13 +23,18 @@ class _CartPageState extends State<CartPage> {
         title: Text("购物车"),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Number(),
-            Mybutton(),
-          ],
+        child:
+        WebView(
+          initialUrl:
+          'https://juejin.im/user/5e3921faf265da57375c2e28',
         ),
+//        Column(
+//          mainAxisAlignment: MainAxisAlignment.center,
+//          children: <Widget>[
+//            Number(),
+//            Mybutton(),
+//          ],
+//        ),
       ),
     );
   }
